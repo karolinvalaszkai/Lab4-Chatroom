@@ -58,7 +58,7 @@ app.generateUsername = function (uuid) {
   var blue = (code >> 16) & 31
   var green = (code >> 21) & 31
   var red = (code >> 27) & 31
-  return 'username(' + uuid')'
+  return 'username(' + uuid + ')'
 }
 
 app.initialize = function () {
@@ -75,7 +75,9 @@ app.onReady = function () {
 
     app.pubTopic = 'kbk/' + app.uuid + '/evt' // We publish to our own device topic
     app.subTopic = 'kbk/+/evt' // We subscribe to all devices using "+" wildcard
-    app.setupCanvas() //change to setUpText
+    app.setupChatbox()
+
+    // app.setupCanvas() //change to setUpText
     app.setupConnection()
     app.ready = true
   }
@@ -123,24 +125,31 @@ app.setupCanvas = function () {
 
 //change to setUpText
 app.setupChatbox = function () {
-  var chat = document.getElementById('chat')
+  app.chatElement = document.getElementById('chat')
+  app.outerDiv = document.createElement('div');
   var totalOffsetX = 0
   var totalOffsetY = 0
   var curElement = canvas
 
+  var app.outerDiv.appendTo(app.chatElement);
+
 
   // We want to remember the beginning of the touch as app.pos
-  send_button.addEventListener('onclick', function (event) {
+  sendButton.addEventListener('onclick', function (event) {
+    textInput = document.getElementById("textInput").value;
+    console.log(textInput)
+
+    
     // Found the following hack to make sure some
     // Androids produce continuous touchmove events.
     if (navigator.userAgent.match(/Android/i)) {
       event.preventDefault()
     }
-
-
     if (app.connected) {
-      var msg = JSON.stringify({from: app.pos, to: {x: x, y: y}, color: app.color})
-      app.publish(msg)
+      // var msg = JSON.stringify({from: app.pos, to: {x: x, y: y}, color: app.color})
+      // app.publish(msg)
+
+      var msg = JSON.stringify({from: uuid, color: app.color})
     }
   })
 }
@@ -176,13 +185,23 @@ app.unsubscribe = function () {
   console.log('Unsubscribed: ' + app.subTopic)
 }
 
+// app.onMessageArrived = function (message) {
+//   var o = JSON.parse(message.payloadString)
+//   app.ctx.beginPath()
+//   app.ctx.moveTo(o.from.x, o.from.y)
+//   app.ctx.lineTo(o.to.x, o.to.y)
+//   app.ctx.strokeStyle = o.color
+//   app.ctx.stroke()
+// }
+
 app.onMessageArrived = function (message) {
   var o = JSON.parse(message.payloadString)
-  app.ctx.beginPath()
-  app.ctx.moveTo(o.from.x, o.from.y)
-  app.ctx.lineTo(o.to.x, o.to.y)
-  app.ctx.strokeStyle = o.color
-  app.ctx.stroke()
+  var chatMessage = document.createElement('div');
+    chatMessage.innerHTML = o;
+    chatMessage
+        .appendTo(app.setupCanvas.outerDiv);
+
+
 }
 
 app.onConnect = function (context) {
