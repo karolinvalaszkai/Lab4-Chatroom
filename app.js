@@ -43,12 +43,22 @@ function guid () {
 }
 
 // Simple function to generate a color from the device UUID
+
+//change to username
 app.generateColor = function (uuid) {
   var code = parseInt(uuid.split('-')[0], 16)
   var blue = (code >> 16) & 31
   var green = (code >> 21) & 31
   var red = (code >> 27) & 31
   return 'rgb(' + (red << 3) + ',' + (green << 3) + ',' + (blue << 3) + ')'
+}
+
+app.generateUsername = function (uuid) {
+  var code = parseInt(uuid.split('-')[0], 16)
+  var blue = (code >> 16) & 31
+  var green = (code >> 21) & 31
+  var red = (code >> 27) & 31
+  return 'username(' + uuid')'
 }
 
 app.initialize = function () {
@@ -61,14 +71,17 @@ app.initialize = function () {
 app.onReady = function () {
   if (!app.ready) {
     app.color = app.generateColor(app.uuid) // Generate our own color from UUID
+    app.username = app.generateUsername(app.uuid) // Generate our own username from UUID
+
     app.pubTopic = 'kbk/' + app.uuid + '/evt' // We publish to our own device topic
     app.subTopic = 'kbk/+/evt' // We subscribe to all devices using "+" wildcard
-    app.setupCanvas()
+    app.setupCanvas() //change to setUpText
     app.setupConnection()
     app.ready = true
   }
 }
 
+//change to setUpText
 app.setupCanvas = function () {
   var canvas = document.getElementById('canvas')
   app.ctx = canvas.getContext('2d')
@@ -107,6 +120,32 @@ app.setupCanvas = function () {
     app.pos = {x: x, y: y}
   })
 }
+
+//change to setUpText
+app.setupChatbox = function () {
+  var chat = document.getElementById('chat')
+  var totalOffsetX = 0
+  var totalOffsetY = 0
+  var curElement = canvas
+
+
+  // We want to remember the beginning of the touch as app.pos
+  send_button.addEventListener('onclick', function (event) {
+    // Found the following hack to make sure some
+    // Androids produce continuous touchmove events.
+    if (navigator.userAgent.match(/Android/i)) {
+      event.preventDefault()
+    }
+
+
+    if (app.connected) {
+      var msg = JSON.stringify({from: app.pos, to: {x: x, y: y}, color: app.color})
+      app.publish(msg)
+    }
+  })
+}
+
+
 
 app.setupConnection = function () {
   app.status('Connecting to ' + host + ':' + port + ' as ' + app.uuid)
