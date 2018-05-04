@@ -126,19 +126,21 @@ app.onReady = function () {
 
 //change to setUpText
 app.setupChatbox = function () {
-  //var chatElement = document.getElementById('chat');
-  //app.chatElement = chatElement;
-
+  var chatElement = document.getElementById('chat');
+  app.chatElement = chatElement;
+  console.log("chat")
 
   //app.outerDiv = document.createElement('div');
 
   //var curElement = canvas
 
   //var app.outerDiv.appendTo(app.chatElement);
-
+  var sendButton = document.getElementById('sendButton');
 
   // We want to remember the beginning of the touch as app.pos
-  sendButton.addEventListener('onclick', function (event) {
+  sendButton.addEventListener('click', function (event) {
+
+    console.log("Send button")
 
 
     textInput = document.getElementById("textInput").value;
@@ -201,14 +203,16 @@ app.unsubscribe = function () {
 app.onMessageArrived = function (message) {
   var o = JSON.parse(message.payloadString)
   var chatSentDiv = document.createElement('div');
-    chatMessage.innerHTML = o.textInput;
+    chatSentDiv.innerHTML = o.textInput;
     // chatMessage
     //     .appendTo(app.setupCanvas.outerDiv);
 
+    console.log(o.textInput)
+    console.log(chatSentDiv)
 
-  //document.getElementById("chat").innerHTML = x;
+  app.chatElement.innerHTML = o.textInput;
 
-  chatSentDiv.appendTo(document.getElementById("chat"))
+  //chatSentDiv.appendTo(app.chatElement)
 
 
 }
