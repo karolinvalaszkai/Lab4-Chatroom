@@ -121,12 +121,16 @@ app.setupConnection = function () {
   app.client = new Paho.MQTT.Client(host, port, app.uuid)
   app.client.onConnectionLost = app.onConnectionLost
   app.client.onMessageArrived = app.onMessageArrived
+  var last_will = new Paho.MQTT.Message(JSON.stringify({ msg: "good bye", uuid: app.uuid, username: usernameInput, color: app.color }));
+  msg.destinationName = 'kbk/' + app.uuid + '/evt'  // e.g.  'music/' + app.uuid + '/evt'
   var options = {
+    willMessage: msg,
     useSSL: true,
     onSuccess: app.onConnect,
     onFailure: app.onConnectFailure
   }
   app.client.connect(options)
+
 }
 
 app.publish = function (json) {
@@ -210,6 +214,8 @@ app.onConnectionLost = function (responseObject) {
   chatElement.innerHTML += "<p>"+o.username+" has left the chat.</p>";
 
   app.connected = false
+
+
 }
 
 app.status = function (s) {
