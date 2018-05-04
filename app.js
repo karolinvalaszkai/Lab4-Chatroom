@@ -122,10 +122,10 @@ app.setupConnection = function () {
   app.client = new Paho.MQTT.Client(host, port, app.uuid)
   app.client.onConnectionLost = app.onConnectionLost
   app.client.onMessageArrived = app.onMessageArrived
-  var last_will = new Paho.MQTT.Message(JSON.stringify({ msg: "good bye", uuid: app.uuid, username: usernameInput, color: app.color }));
-  msg.destinationName = 'kbk/' + app.uuid + '/evt'  // e.g.  'music/' + app.uuid + '/evt'
+  //var last_will = new Paho.MQTT.Message(JSON.stringify({ msg: "good bye", uuid: app.uuid, username: usernameInput, color: app.color }));
+  //msg.destinationName = 'kbk/' + app.uuid + '/evt'  // e.g.  'music/' + app.uuid + '/evt'
   var options = {
-    willMessage: msg,
+   // willMessage: msg,
     useSSL: true,
     onSuccess: app.onConnect,
     onFailure: app.onConnectFailure
@@ -170,10 +170,7 @@ app.onMessageArrived = function (message) {
     console.log(chatSentDiv)
 
   var chatElement = document.getElementById('chat');
-
-    //app.chatElement.innerHTML = "hej";
-
-  chatElement.innerHTML += "<p>"+o.username+": "+o.textInput+"</p>";
+  chatElement.innerHTML += "<p style='color:"+o.color+"'>"+o.username+": "+o.textInput+"</p>";
 
   //chatSentDiv.appendTo(app.chatElement)
 }
