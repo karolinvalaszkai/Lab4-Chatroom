@@ -84,57 +84,9 @@ app.onReady = function () {
   }
 }
 
-                                              //change to setUpText
-                                              app.setupCanvas = function () {
-                                                var canvas = document.getElementById('canvas')
-                                                app.ctx = canvas.getContext('2d')
-                                                var totalOffsetX = 0
-                                                var totalOffsetY = 0
-                                                var curElement = canvas
-                                                do {
-                                                  totalOffsetX += curElement.offsetLeft
-                                                  totalOffsetY += curElement.offsetTop
-                                                } while (curElement = curElement.offsetParent)
-                                                app.left = totalOffsetX
-                                                app.top = totalOffsetY
-
-                                                // We want to remember the beginning of the touch as app.pos
-                                                canvas.addEventListener('touchstart', function (event) {
-                                                  // Found the following hack to make sure some
-                                                  // Androids produce continuous touchmove events.
-                                                  if (navigator.userAgent.match(/Android/i)) {
-                                                    event.preventDefault()
-                                                  }
-                                                  var t = event.touches[0]
-                                                  var x = Math.floor(t.clientX) - app.left
-                                                  var y = Math.floor(t.clientY) - app.top
-                                                  app.pos = {x: x, y: y}
-                                                })
-
-                                                // Then we publish a line from-to with our color and remember our app.pos
-                                                canvas.addEventListener('touchmove', function (event) {
-                                                  var t = event.touches[0]
-                                                  var x = Math.floor(t.clientX) - app.left
-                                                  var y = Math.floor(t.clientY) - app.top
-                                                  if (app.connected) {
-                                                    var msg = JSON.stringify({from: app.pos, to: {x: x, y: y}, color: app.color})
-                                                    app.publish(msg)
-                                                  }
-                                                  app.pos = {x: x, y: y}
-                                                })
-                                              }
-
 //change to setUpText
 app.setupChatbox = function () {
-  var chatElement = document.getElementById('chat');
-  app.chatElement = chatElement;
-  console.log("chat")
 
-  //app.outerDiv = document.createElement('div');
-
-  //var curElement = canvas
-
-  //var app.outerDiv.appendTo(app.chatElement);
   var sendButton = document.getElementById('sendButton');
 
   // We want to remember the beginning of the touch as app.pos
@@ -144,6 +96,8 @@ app.setupChatbox = function () {
 
 
     textInput = document.getElementById("textInput").value;
+    usernameInput = document.getElementById("usernameInput").value;
+
 
     // Found the following hack to make sure some
     // Androids produce continuous touchmove events.
@@ -153,7 +107,7 @@ app.setupChatbox = function () {
     if (app.connected) {
       // var msg = JSON.stringify({from: app.pos, to: {x: x, y: y}, color: app.color})
 
-      var msg = JSON.stringify({username: app.uuid, color: app.color, textInput: textInput})
+      var msg = JSON.stringify({username: usernameInput, color: app.color, textInput: textInput})
       app.publish(msg)
 
     }
@@ -210,7 +164,11 @@ app.onMessageArrived = function (message) {
     console.log(o.textInput)
     console.log(chatSentDiv)
 
-  app.chatElement.innerHTML = o.textInput;
+  var chatElement = document.getElementById('chat');
+
+    //app.chatElement.innerHTML = "hej";
+
+  chatElement.innerHTML += "<p>"+o.username+": "+o.textInput+"</p>";
 
   //chatSentDiv.appendTo(app.chatElement)
 
@@ -221,6 +179,9 @@ app.onConnect = function (context) {
   app.subscribe()
   app.status('Connected!')
   app.connected = true
+
+  var o = JSON.parse(message.payloadString)
+
 }
 
 app.onConnectFailure = function (e) {
@@ -230,6 +191,9 @@ app.onConnectFailure = function (e) {
 app.onConnectionLost = function (responseObject) {
   app.status('Connection lost!')
   console.log('Connection lost: ' + responseObject.errorMessage)
+
+  chatElement.innerHTML += "<p>"+o.username+" has left the chat.</p>";
+
   app.connected = false
 }
 
