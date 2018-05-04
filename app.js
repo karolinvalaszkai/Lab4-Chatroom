@@ -179,19 +179,11 @@ app.onMessageArrived = function (message) {
     console.log(o.textInput)
     console.log(chatSentDiv)
 
-<<<<<<< HEAD
   app.chatElement.innerHTML = o.textInput;
   catch (e) {
   console.log('Bad message: ' + message.payloadString)
   }
   //document.getElementById("demo").innerHTML = x;
-=======
-  var chatElement = document.getElementById('chat');
-
-    //app.chatElement.innerHTML = "hej";
-
-  chatElement.innerHTML += "<p>"+o.username+": "+o.textInput+"</p>";
->>>>>>> e40f9f18bb0d4f2a002028b0ee5725153165304b
 
   //chatSentDiv.appendTo(app.chatElement)
 
