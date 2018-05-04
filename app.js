@@ -45,13 +45,13 @@ function guid () {
 // Simple function to generate a color from the device UUID
 
 //change to username
-app.generateColor = function (uuid) {
-  var code = parseInt(uuid.split('-')[0], 16)
-  var blue = (code >> 16) & 31
-  var green = (code >> 21) & 31
-  var red = (code >> 27) & 31
-  return 'rgb(' + (red << 3) + ',' + (green << 3) + ',' + (blue << 3) + ')'
-}
+                    app.generateColor = function (uuid) {
+                      var code = parseInt(uuid.split('-')[0], 16)
+                      var blue = (code >> 16) & 31
+                      var green = (code >> 21) & 31
+                      var red = (code >> 27) & 31
+                      return 'rgb(' + (red << 3) + ',' + (green << 3) + ',' + (blue << 3) + ')'
+                    }
 
 app.generateUsername = function (uuid) {
   var code = parseInt(uuid.split('-')[0], 16)
@@ -75,70 +75,73 @@ app.onReady = function () {
 
     app.pubTopic = 'kbk/' + app.uuid + '/evt' // We publish to our own device topic
     app.subTopic = 'kbk/+/evt' // We subscribe to all devices using "+" wildcard
+    
     app.setupChatbox()
-
     // app.setupCanvas() //change to setUpText
+
     app.setupConnection()
     app.ready = true
   }
 }
 
-//change to setUpText
-app.setupCanvas = function () {
-  var canvas = document.getElementById('canvas')
-  app.ctx = canvas.getContext('2d')
-  var totalOffsetX = 0
-  var totalOffsetY = 0
-  var curElement = canvas
-  do {
-    totalOffsetX += curElement.offsetLeft
-    totalOffsetY += curElement.offsetTop
-  } while (curElement = curElement.offsetParent)
-  app.left = totalOffsetX
-  app.top = totalOffsetY
+                                              //change to setUpText
+                                              app.setupCanvas = function () {
+                                                var canvas = document.getElementById('canvas')
+                                                app.ctx = canvas.getContext('2d')
+                                                var totalOffsetX = 0
+                                                var totalOffsetY = 0
+                                                var curElement = canvas
+                                                do {
+                                                  totalOffsetX += curElement.offsetLeft
+                                                  totalOffsetY += curElement.offsetTop
+                                                } while (curElement = curElement.offsetParent)
+                                                app.left = totalOffsetX
+                                                app.top = totalOffsetY
 
-  // We want to remember the beginning of the touch as app.pos
-  canvas.addEventListener('touchstart', function (event) {
-    // Found the following hack to make sure some
-    // Androids produce continuous touchmove events.
-    if (navigator.userAgent.match(/Android/i)) {
-      event.preventDefault()
-    }
-    var t = event.touches[0]
-    var x = Math.floor(t.clientX) - app.left
-    var y = Math.floor(t.clientY) - app.top
-    app.pos = {x: x, y: y}
-  })
+                                                // We want to remember the beginning of the touch as app.pos
+                                                canvas.addEventListener('touchstart', function (event) {
+                                                  // Found the following hack to make sure some
+                                                  // Androids produce continuous touchmove events.
+                                                  if (navigator.userAgent.match(/Android/i)) {
+                                                    event.preventDefault()
+                                                  }
+                                                  var t = event.touches[0]
+                                                  var x = Math.floor(t.clientX) - app.left
+                                                  var y = Math.floor(t.clientY) - app.top
+                                                  app.pos = {x: x, y: y}
+                                                })
 
-  // Then we publish a line from-to with our color and remember our app.pos
-  canvas.addEventListener('touchmove', function (event) {
-    var t = event.touches[0]
-    var x = Math.floor(t.clientX) - app.left
-    var y = Math.floor(t.clientY) - app.top
-    if (app.connected) {
-      var msg = JSON.stringify({from: app.pos, to: {x: x, y: y}, color: app.color})
-      app.publish(msg)
-    }
-    app.pos = {x: x, y: y}
-  })
-}
+                                                // Then we publish a line from-to with our color and remember our app.pos
+                                                canvas.addEventListener('touchmove', function (event) {
+                                                  var t = event.touches[0]
+                                                  var x = Math.floor(t.clientX) - app.left
+                                                  var y = Math.floor(t.clientY) - app.top
+                                                  if (app.connected) {
+                                                    var msg = JSON.stringify({from: app.pos, to: {x: x, y: y}, color: app.color})
+                                                    app.publish(msg)
+                                                  }
+                                                  app.pos = {x: x, y: y}
+                                                })
+                                              }
 
 //change to setUpText
 app.setupChatbox = function () {
-  app.chatElement = document.getElementById('chat')
-  app.outerDiv = document.createElement('div');
-  var totalOffsetX = 0
-  var totalOffsetY = 0
-  var curElement = canvas
+  var chatElement = document.getElementById('chat');
+  app.chatElement = chatElement;
+
+
+  //app.outerDiv = document.createElement('div');
+
+  //var curElement = canvas
 
   var app.outerDiv.appendTo(app.chatElement);
 
 
   // We want to remember the beginning of the touch as app.pos
   sendButton.addEventListener('onclick', function (event) {
-    textInput = document.getElementById("textInput").value;
-    console.log(textInput)
 
+
+    textInput = document.getElementById("textInput").value;
     
     // Found the following hack to make sure some
     // Androids produce continuous touchmove events.
@@ -185,14 +188,14 @@ app.unsubscribe = function () {
   console.log('Unsubscribed: ' + app.subTopic)
 }
 
-// app.onMessageArrived = function (message) {
-//   var o = JSON.parse(message.payloadString)
-//   app.ctx.beginPath()
-//   app.ctx.moveTo(o.from.x, o.from.y)
-//   app.ctx.lineTo(o.to.x, o.to.y)
-//   app.ctx.strokeStyle = o.color
-//   app.ctx.stroke()
-// }
+                                // app.onMessageArrived = function (message) {
+                                //   var o = JSON.parse(message.payloadString)
+                                //   app.ctx.beginPath()
+                                //   app.ctx.moveTo(o.from.x, o.from.y)
+                                //   app.ctx.lineTo(o.to.x, o.to.y)
+                                //   app.ctx.strokeStyle = o.color
+                                //   app.ctx.stroke()
+                                // }
 
 app.onMessageArrived = function (message) {
   var o = JSON.parse(message.payloadString)
@@ -200,6 +203,10 @@ app.onMessageArrived = function (message) {
     chatMessage.innerHTML = o;
     chatMessage
         .appendTo(app.setupCanvas.outerDiv);
+
+
+  //document.getElementById("demo").innerHTML = x;
+
 
 
 }
