@@ -1,4 +1,3 @@
-
 // A Painter application that uses MQTT to distribute draw events
 // to all other devices running this app.
 
@@ -86,6 +85,9 @@ app.onReady = function () {
 
 //change to setUpText
 app.setupChatbox = function () {
+  var chatElement = document.getElementById('chat');
+  app.chatElement = chatElement;
+  console.log("chat")
 
   var sendButton = document.getElementById('sendButton');
 
@@ -93,7 +95,6 @@ app.setupChatbox = function () {
   sendButton.addEventListener('click', function (event) {
 
     console.log("Send button")
-
 
     textInput = document.getElementById("textInput").value;
     usernameInput = document.getElementById("usernameInput").value;
@@ -154,21 +155,6 @@ app.unsubscribe = function () {
                                 //   app.ctx.stroke()
                                 // }
 
-
-                                // app.onMessageArrived = function (message) {
-                                // try {
-                                // var o = JSON.parse(message.payloadString)
-                                // app.ctx.beginPath()
-                                // app.ctx.moveTo(o.from.x, o.from.y)
-                                // app.ctx.lineTo(o.to.x, o.to.y)
-                                // app.ctx.strokeStyle = o.color
-                                // app.ctx.stroke()
-                                // } catch (e) {
-                                // console.log('Bad message: ' + message.payloadString)
-                                // }
-                                // }
-
-
 app.onMessageArrived = function (message) {
   var o = JSON.parse(message.payloadString)
   var chatSentDiv = document.createElement('div');
@@ -179,24 +165,19 @@ app.onMessageArrived = function (message) {
     console.log(o.textInput)
     console.log(chatSentDiv)
 
-  app.chatElement.innerHTML = o.textInput;
-  catch (e) {
-  console.log('Bad message: ' + message.payloadString)
-  }
-  //document.getElementById("demo").innerHTML = x;
+  var chatElement = document.getElementById('chat');
+
+    //app.chatElement.innerHTML = "hej";
+
+  chatElement.innerHTML += "<p>"+o.username+": "+o.textInput+"</p>";
 
   //chatSentDiv.appendTo(app.chatElement)
-
-
 }
 
 app.onConnect = function (context) {
   app.subscribe()
   app.status('Connected!')
   app.connected = true
-
-  var o = JSON.parse(message.payloadString)
-
 }
 
 app.onConnectFailure = function (e) {
@@ -206,9 +187,6 @@ app.onConnectFailure = function (e) {
 app.onConnectionLost = function (responseObject) {
   app.status('Connection lost!')
   console.log('Connection lost: ' + responseObject.errorMessage)
-
-  chatElement.innerHTML += "<p>"+o.username+" has left the chat.</p>";
-
   app.connected = false
 }
 
