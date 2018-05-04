@@ -126,15 +126,15 @@ app.onReady = function () {
 
 //change to setUpText
 app.setupChatbox = function () {
-  var chatElement = document.getElementById('chat');
-  app.chatElement = chatElement;
+  //var chatElement = document.getElementById('chat');
+  //app.chatElement = chatElement;
 
 
   //app.outerDiv = document.createElement('div');
 
   //var curElement = canvas
 
-  var app.outerDiv.appendTo(app.chatElement);
+  //var app.outerDiv.appendTo(app.chatElement);
 
 
   // We want to remember the beginning of the touch as app.pos
@@ -150,9 +150,10 @@ app.setupChatbox = function () {
     }
     if (app.connected) {
       // var msg = JSON.stringify({from: app.pos, to: {x: x, y: y}, color: app.color})
-      // app.publish(msg)
 
-      var msg = JSON.stringify({from: uuid, color: app.color})
+      var msg = JSON.stringify({username: app.uuid, color: app.color, textInput: textInput})
+      app.publish(msg)
+
     }
   })
 }
