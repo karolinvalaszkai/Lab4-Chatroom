@@ -200,6 +200,21 @@ app.unsubscribe = function () {
                                 //   app.ctx.stroke()
                                 // }
 
+
+                                // app.onMessageArrived = function (message) {
+                                // try {
+                                // var o = JSON.parse(message.payloadString)
+                                // app.ctx.beginPath()
+                                // app.ctx.moveTo(o.from.x, o.from.y)
+                                // app.ctx.lineTo(o.to.x, o.to.y)
+                                // app.ctx.strokeStyle = o.color
+                                // app.ctx.stroke()
+                                // } catch (e) {
+                                // console.log('Bad message: ' + message.payloadString)
+                                // }
+                                // }
+
+
 app.onMessageArrived = function (message) {
   var o = JSON.parse(message.payloadString)
   var chatSentDiv = document.createElement('div');
@@ -211,6 +226,10 @@ app.onMessageArrived = function (message) {
     console.log(chatSentDiv)
 
   app.chatElement.innerHTML = o.textInput;
+  catch (e) {
+  console.log('Bad message: ' + message.payloadString)
+  }
+  //document.getElementById("demo").innerHTML = x;
 
   //chatSentDiv.appendTo(app.chatElement)
 
