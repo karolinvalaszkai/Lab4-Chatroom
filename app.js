@@ -75,7 +75,7 @@ app.onReady = function () {
 
     app.pubTopic = 'kbk/' + app.uuid + '/evt' // We publish to our own device topic
     app.subTopic = 'kbk/+/evt' // We subscribe to all devices using "+" wildcard
-    
+
     app.setupChatbox()
     // app.setupCanvas() //change to setUpText
 
@@ -142,7 +142,7 @@ app.setupChatbox = function () {
 
 
     textInput = document.getElementById("textInput").value;
-    
+
     // Found the following hack to make sure some
     // Androids produce continuous touchmove events.
     if (navigator.userAgent.match(/Android/i)) {
@@ -199,14 +199,15 @@ app.unsubscribe = function () {
 
 app.onMessageArrived = function (message) {
   var o = JSON.parse(message.payloadString)
-  var chatMessage = document.createElement('div');
-    chatMessage.innerHTML = o;
-    chatMessage
-        .appendTo(app.setupCanvas.outerDiv);
+  var chatSentDiv = document.createElement('div');
+    chatMessage.innerHTML = o.textInput;
+    // chatMessage
+    //     .appendTo(app.setupCanvas.outerDiv);
 
 
-  //document.getElementById("demo").innerHTML = x;
+  //document.getElementById("chat").innerHTML = x;
 
+  chatSentDiv.appendTo(document.getElementById("chat"))
 
 
 }
