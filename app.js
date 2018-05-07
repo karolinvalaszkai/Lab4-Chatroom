@@ -85,9 +85,6 @@ app.onReady = function () {
 
 //change to setUpText
 app.setupChatbox = function () {
-  var chatElement = document.getElementById('chat');
-  app.chatElement = chatElement;
-  console.log("chat")
 
   var sendButton = document.getElementById('sendButton');
 
@@ -96,8 +93,9 @@ app.setupChatbox = function () {
 
     console.log("Send button")
 
-    textInput = document.getElementById("textInput").value;
-    usernameInput = document.getElementById("usernameInput").value;
+    app.textInput = document.getElementById("textInput").value;
+    document.getElementById("textInput").value = "";
+    app.usernameInput = document.getElementById("usernameInput").value;
 
 
     // Found the following hack to make sure some
@@ -108,7 +106,7 @@ app.setupChatbox = function () {
     if (app.connected) {
       // var msg = JSON.stringify({from: app.pos, to: {x: x, y: y}, color: app.color})
 
-      var msg = JSON.stringify({username: usernameInput, color: app.color, textInput: textInput})
+      var msg = JSON.stringify({username: app.usernameInput, color: app.color, textInput: app.textInput})
       app.publish(msg)
 
     }
@@ -122,10 +120,11 @@ app.setupConnection = function () {
   app.client = new Paho.MQTT.Client(host, port, app.uuid)
   app.client.onConnectionLost = app.onConnectionLost
   app.client.onMessageArrived = app.onMessageArrived
-  //var last_will = new Paho.MQTT.Message(JSON.stringify({ msg: "good bye", uuid: app.uuid, username: usernameInput, color: app.color }));
-  //msg.destinationName = 'kbk/' + app.uuid + '/evt'  // e.g.  'music/' + app.uuid + '/evt'
+  console.log(app.usernameInput)
+  var last_will = new Paho.MQTT.Message(JSON.stringify({username: app.usernameInput, color: app.color, textInput: 'Connection lost'}));
+  last_will.destinationName = 'kbk/' + app.uuid + '/evt'  // e.g.  'music/' + app.uuid + '/evt'
   var options = {
-   // willMessage: msg,
+    willMessage: last_will,
     useSSL: true,
     onSuccess: app.onConnect,
     onFailure: app.onConnectFailure
@@ -150,25 +149,8 @@ app.unsubscribe = function () {
   console.log('Unsubscribed: ' + app.subTopic)
 }
 
-                                // app.onMessageArrived = function (message) {
-                                //   var o = JSON.parse(message.payloadString)
-                                //   app.ctx.beginPath()
-                                //   app.ctx.moveTo(o.from.x, o.from.y)
-                                //   app.ctx.lineTo(o.to.x, o.to.y)
-                                //   app.ctx.strokeStyle = o.color
-                                //   app.ctx.stroke()
-                                // }
-
 app.onMessageArrived = function (message) {
   var o = JSON.parse(message.payloadString)
-  var chatSentDiv = document.createElement('div');
-    chatSentDiv.innerHTML = o.textInput;
-    // chatMessage
-    //     .appendTo(app.setupCanvas.outerDiv);
-
-    console.log(o.textInput)
-    console.log(chatSentDiv)
-
   var chatElement = document.getElementById('chat');
   chatElement.innerHTML += "<p style='color:"+o.color+"'>"+o.username+": "+o.textInput+"</p>";
 
